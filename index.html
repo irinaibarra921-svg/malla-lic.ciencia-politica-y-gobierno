@@ -1,81 +1,74 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
   <title>Malla Curricular - Ciencia Política y Gobierno</title>
   <style>
     body {
-      font-family: Helvetica, sans-serif;
+      font-family: 'Americana BT', Helvetica, sans-serif;
       background-color: white;
       color: #333;
+      margin: 0;
       padding: 20px;
     }
-
-    h1 {
-      text-align: center;
-      color: #2e7d32;
+    h2 {
+      color: #70C289;
     }
-
-    .ciclo {
-      margin-bottom: 40px;
-    }
-
-    .ciclo h2 {
-      color: white;
-      background-color: #2e7d32;
-      padding: 10px;
-      border-radius: 5px;
-    }
-
-    .materias {
+    .container {
       display: flex;
+      gap: 20px;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 15px;
     }
-
-    .materia {
+    .year {
+      flex: 1;
+      min-width: 250px;
+    }
+    .subject {
+      background: #f9f9f9;
+      border: 2px solid #ccc;
+      border-left: 10px solid #70C289;
+      margin: 5px 0;
       padding: 10px;
-      border: 2px solid #2e7d32;
-      border-radius: 5px;
-      background-color: white;
+      border-radius: 8px;
       cursor: pointer;
-      transition: background-color 0.3s;
       position: relative;
-      max-width: 200px;
+      transition: background 0.2s;
     }
-
-    .materia.aprobada {
-      background-color: #c8e6c9;
+    .subject:hover {
+      background: #eefaf2;
     }
-
-    .materia.bloqueada {
-      opacity: 0.5;
+    .subject.locked {
+      background: #eee;
+      border-color: #bbb;
       cursor: not-allowed;
     }
-
-    .materia:hover::after {
+    .subject.locked:hover::after {
       content: attr(data-tooltip);
       position: absolute;
-      bottom: -30px;
-      left: 0;
-      background: #2e7d32;
+      left: 100%;
+      top: 0;
+      background: #70C289;
       color: white;
       padding: 5px;
-      border-radius: 5px;
       font-size: 12px;
       white-space: nowrap;
+      border-radius: 5px;
+      margin-left: 10px;
+      z-index: 10;
+    }
+    .subject.completed {
+      text-decoration: line-through;
+      opacity: 0.6;
     }
   </style>
 </head>
 <body>
-  <h1>Licenciatura en Ciencia Política y Gobierno - UNLa</h1>
-  <div id="contenedor"></div>
+  <h1>Malla Curricular - Ciencia Política y Gobierno</h1>
+  <div class="container" id="malla"></div>
 
   <script>
-    const estructura = {
-      "Primer Año": [
+    const materiasPorAnio = {
+      'Primer año': [
         "Sociología política",
         "Fundamentos de Ciencia Política",
         "Economía Política",
@@ -85,7 +78,7 @@
         "Estadística social",
         "Teoría Política I"
       ],
-      "Segundo Año": [
+      'Segundo año': [
         "Metodología de la investigación social I",
         "Teoría Política II",
         "Derecho Constitucional",
@@ -97,7 +90,7 @@
         "Historia política y social argentina",
         "Taller de práctica pre-profesional 1°etapa"
       ],
-      "Tercer Año": [
+      'Tercer año': [
         "Política internacional",
         "Análisis de la sociedad argentina",
         "Derecho administrativo",
@@ -107,7 +100,7 @@
         "Gobierno local",
         "Políticas públicas"
       ],
-      "Cuarto Año": [
+      'Cuarto año': [
         "Análisis político y opinión pública",
         "Seminario de Justicia y Derechos Humanos",
         "Planificación estratégica y análisis de políticas públicas",
@@ -118,7 +111,7 @@
         "Comunicación política",
         "Taller de trabajo final integrador"
       ],
-      "Módulos/Seminarios": [
+      'Módulos/Seminarios': [
         "Seminario optativo I",
         "Seminario optativo II",
         "Informática Módulo 2: Procesador de textos",
@@ -132,81 +125,82 @@
     };
 
     const correlatividades = {
-      "Teoría Política I": ["Fundamentos de Ciencia Política"],
-      "Metodología de la investigación social I": ["Estadística social"],
-      "Derecho Constitucional": ["Instituciones del derecho"],
-      "Historia política y social latinoamericana": ["Historia moderna y contemporánea"],
-      "Metodología de la Investigación Social II": ["Metodología de la investigación social I"],
-      "Teoría del Estado": ["Fundamentos de Ciencia Política"],
-      "Economía internacional": ["Economía Política"],
-      "Historia política y social argentina": ["Historia política y social latinoamericana"],
-      "Taller de práctica pre-profesional 1°etapa": ["Metodología de la investigación social I"],
-      "Política internacional": ["Teoría del Estado"],
-      "Análisis de la sociedad argentina": ["Historia política y social argentina"],
-      "Derecho administrativo": ["Instituciones del derecho"],
-      "Teoría política contemporánea": ["Teoría Política II"],
-      "Administración Pública": ["Teoría del Estado"],
-      "Economía de gobierno y finanzas públicas": ["Economía internacional"],
-      "Gobierno local": ["Derecho Constitucional"],
-      "Políticas públicas": ["Administración Pública"],
-      "Análisis político y opinión pública": ["Teoría política contemporánea"],
-      "Seminario de Justicia y Derechos Humanos": ["Derecho Constitucional"],
-      "Planificación estratégica y análisis de políticas públicas": ["Políticas públicas"],
-      "Formulación y evaluación de proyectos": ["Administración Pública"],
-      "Ideas políticas en América Latina": ["Análisis de la sociedad argentina"],
-      "Política comparada": ["Teoría política contemporánea"],
-      "Politica Latinoamericana": ["Planificación estratégica y análisis de políticas públicas"],
-      "Comunicación política": ["Análisis político y opinión pública"]
+      "Fundamentos de Ciencia Política": ["Teoría Política I", "Teoría del Estado"],
+      "Teoría Política I": ["Teoría Política II"],
+      "Estadística social": ["Metodología de la investigación social I"],
+      "Metodología de la investigación social I": ["Metodología de la Investigación Social II"],
+      "Metodología de la Investigación Social II": ["Taller de práctica pre-profesional 1°etapa"],
+      "Instituciones del derecho": ["Derecho Constitucional", "Derecho administrativo"],
+      "Historia moderna y contemporánea": ["Historia política y social latinoamericana"],
+      "Historia política y social latinoamericana": ["Historia política y social argentina"],
+      "Historia política y social argentina": ["Análisis de la sociedad argentina"],
+      "Economía política": ["Economía internacional"],
+      "Economía internacional": ["Economía de gobierno y finanzas públicas"],
+      "Teoría del Estado": ["Política internacional", "Administración Pública"],
+      "Teoría Política II": ["Teoría política contemporánea"],
+      "Derecho Constitucional": ["Gobierno local", "Seminario de Justicia y Derechos Humanos"],
+      "Administración Pública": ["Políticas públicas", "Formulación y evaluación de proyectos"],
+      "Políticas públicas": ["Planificación estratégica y análisis de políticas públicas"],
+      "Planificación estratégica y análisis de políticas públicas": ["Política latinoamericana"],
+      "Análisis de la sociedad argentina": ["Ideas políticas en América Latina"],
+      "Teoría política contemporánea": ["Análisis político y opinión pública", "Política comparada"],
+      "Análisis político y opinión pública": ["Comunicación política"],
+      "Seminario optativo I": ["Seminario optativo II"],
+      "Informática Módulo 2: Procesador de textos": ["Informática Módulo 7: Sistemas de información geográfica"],
+      "Informática Módulo 7: Sistemas de información geográfica": ["Informática Módulo 11: Progama estadístico para las Ciencias Sociales 1"],
+      "Informática Módulo 11: Progama estadístico para las Ciencias Sociales 1": ["Informática Módulo 12: Programa estadístico para las Ciencias Sociales 2"],
+      "Inglés I": ["Inglés II"],
+      "Inglés II": ["Inglés III"],
+      "Taller de trabajo final integrador": Object.values(materiasPorAnio).slice(0, 4).flat()
     };
 
-    const aprobadas = JSON.parse(localStorage.getItem("materiasAprobadas") || "[]");
+    const estado = JSON.parse(localStorage.getItem("estadoMaterias")) || {};
 
-    const contenedor = document.getElementById("contenedor");
+    function crearMalla() {
+      const contenedor = document.getElementById("malla");
+      contenedor.innerHTML = "";
 
-    for (const [ciclo, materias] of Object.entries(estructura)) {
-      const div = document.createElement("div");
-      div.className = "ciclo";
-      div.innerHTML = `<h2>${ciclo}</h2>`;
+      for (const [anio, materias] of Object.entries(materiasPorAnio)) {
+        const columna = document.createElement("div");
+        columna.className = "year";
 
-      const contMaterias = document.createElement("div");
-      contMaterias.className = "materias";
+        const titulo = document.createElement("h2");
+        titulo.textContent = anio;
+        columna.appendChild(titulo);
 
-      materias.forEach(nombre => {
-        const m = document.createElement("div");
-        m.className = "materia";
-        m.textContent = nombre;
+        for (const materia of materias) {
+          const div = document.createElement("div");
+          div.className = "subject";
+          div.textContent = materia;
 
-        if (aprobadas.includes(nombre)) {
-          m.classList.add("aprobada");
-        } else if (correlatividades[nombre]) {
-          const faltantes = correlatividades[nombre].filter(req => !aprobadas.includes(req));
-          if (faltantes.length > 0) {
-            m.classList.add("bloqueada");
-            m.setAttribute("data-tooltip", "Faltan: " + faltantes.join(", "));
-          }
-        }
+          const requisitos = Object.entries(correlatividades)
+            .filter(([req, dependientes]) => dependientes.includes(materia))
+            .map(([req]) => req);
 
-        m.addEventListener("click", () => {
-          if (m.classList.contains("bloqueada")) return;
-          m.classList.toggle("aprobada");
-          const index = aprobadas.indexOf(nombre);
-          if (index > -1) {
-            aprobadas.splice(index, 1);
+          const bloqueada = requisitos.some(req => !estado[req]);
+
+          if (bloqueada) {
+            div.classList.add("locked");
+            div.dataset.tooltip = "Requiere: " + requisitos.filter(r => !estado[r]).join(", ");
           } else {
-            aprobadas.push(nombre);
+            div.addEventListener("click", () => {
+              estado[materia] = !estado[materia];
+              localStorage.setItem("estadoMaterias", JSON.stringify(estado));
+              crearMalla();
+            });
           }
-          localStorage.setItem("materiasAprobadas", JSON.stringify(aprobadas));
-          location.reload();
-        });
 
-        contMaterias.appendChild(m);
-      });
+          if (estado[materia]) {
+            div.classList.add("completed");
+          }
 
-      div.appendChild(contMaterias);
-      contenedor.appendChild(div);
+          columna.appendChild(div);
+        }
+        contenedor.appendChild(columna);
+      }
     }
+
+    crearMalla();
   </script>
 </body>
 </html>
-
- 
