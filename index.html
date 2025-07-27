@@ -1,86 +1,81 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Malla Curricular Ciencia Política - UNLa</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Malla Curricular - Ciencia Política y Gobierno</title>
   <style>
     body {
       font-family: Helvetica, sans-serif;
-      background: #ffffff;
-      margin: 0;
-      padding: 20px;
+      background-color: white;
       color: #333;
+      padding: 20px;
     }
+
     h1 {
       text-align: center;
       color: #2e7d32;
     }
-    .year {
+
+    .ciclo {
       margin-bottom: 40px;
     }
-    .year h2 {
-      background: #a5d6a7;
-      color: #1b5e20;
+
+    .ciclo h2 {
+      color: white;
+      background-color: #2e7d32;
       padding: 10px;
       border-radius: 5px;
     }
-    .grid {
+
+    .materias {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
+      margin-top: 15px;
     }
-    .subject {
+
+    .materia {
       padding: 10px;
-      border: 2px solid #a5d6a7;
+      border: 2px solid #2e7d32;
       border-radius: 5px;
-      background: #e8f5e9;
+      background-color: white;
       cursor: pointer;
-      width: 200px;
-      transition: background 0.3s, border 0.3s;
+      transition: background-color 0.3s;
       position: relative;
+      max-width: 200px;
     }
-    .subject.locked {
-      background: #f0f0f0;
-      border: 2px dashed #ccc;
-      color: #aaa;
+
+    .materia.aprobada {
+      background-color: #c8e6c9;
+    }
+
+    .materia.bloqueada {
+      opacity: 0.5;
       cursor: not-allowed;
     }
-    .subject:hover .tooltip {
-      visibility: visible;
-      opacity: 1;
-    }
-    .tooltip {
-      visibility: hidden;
-      opacity: 0;
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      padding: 5px 8px;
-      border-radius: 4px;
+
+    .materia:hover::after {
+      content: attr(data-tooltip);
       position: absolute;
-      z-index: 1;
-      bottom: 125%;
-      left: 50%;
-      transform: translateX(-50%);
-      transition: opacity 0.3s;
+      bottom: -30px;
+      left: 0;
+      background: #2e7d32;
+      color: white;
+      padding: 5px;
+      border-radius: 5px;
+      font-size: 12px;
       white-space: nowrap;
-    }
-    .subject.approved {
-      background: #c8e6c9;
-      border-color: #388e3c;
-      color: #2e7d32;
-      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>Malla Curricular - Ciencia Política y Gobierno (UNLa)</h1>
-
-  <div id="malla"></div>
+  <h1>Licenciatura en Ciencia Política y Gobierno - UNLa</h1>
+  <div id="contenedor"></div>
 
   <script>
-    const subjects = {
-      "Primer año": [
+    const estructura = {
+      "Primer Año": [
         "Sociología política",
         "Fundamentos de Ciencia Política",
         "Economía Política",
@@ -90,7 +85,7 @@
         "Estadística social",
         "Teoría Política I"
       ],
-      "Segundo año": [
+      "Segundo Año": [
         "Metodología de la investigación social I",
         "Teoría Política II",
         "Derecho Constitucional",
@@ -100,9 +95,9 @@
         "Teoría del Estado",
         "Economía internacional",
         "Historia política y social argentina",
-        "Taller de práctica pre-profesional 1 etapa"
+        "Taller de práctica pre-profesional 1°etapa"
       ],
-      "Tercer año": [
+      "Tercer Año": [
         "Política internacional",
         "Análisis de la sociedad argentina",
         "Derecho administrativo",
@@ -112,7 +107,7 @@
         "Gobierno local",
         "Políticas públicas"
       ],
-      "Cuarto año": [
+      "Cuarto Año": [
         "Análisis político y opinión pública",
         "Seminario de Justicia y Derechos Humanos",
         "Planificación estratégica y análisis de políticas públicas",
@@ -122,19 +117,30 @@
         "Politica Latinoamericana",
         "Comunicación política",
         "Taller de trabajo final integrador"
+      ],
+      "Módulos/Seminarios": [
+        "Seminario optativo I",
+        "Seminario optativo II",
+        "Informática Módulo 2: Procesador de textos",
+        "Informática Módulo 7: Sistemas de información geográfica",
+        "Informática Módulo 11: Progama estadístico para las Ciencias Sociales 1",
+        "Informática Módulo 12: Programa estadístico para las Ciencias Sociales 2",
+        "Inglés I",
+        "Inglés II",
+        "Inglés III"
       ]
     };
 
     const correlatividades = {
       "Teoría Política I": ["Fundamentos de Ciencia Política"],
-      "Estadística social": ["Metodología de la investigación social I"],
+      "Metodología de la investigación social I": ["Estadística social"],
       "Derecho Constitucional": ["Instituciones del derecho"],
       "Historia política y social latinoamericana": ["Historia moderna y contemporánea"],
       "Metodología de la Investigación Social II": ["Metodología de la investigación social I"],
       "Teoría del Estado": ["Fundamentos de Ciencia Política"],
       "Economía internacional": ["Economía Política"],
       "Historia política y social argentina": ["Historia política y social latinoamericana"],
-      "Taller de práctica pre-profesional 1 etapa": ["Metodología de la investigación social I"],
+      "Taller de práctica pre-profesional 1°etapa": ["Metodología de la investigación social I"],
       "Política internacional": ["Teoría del Estado"],
       "Análisis de la sociedad argentina": ["Historia política y social argentina"],
       "Derecho administrativo": ["Instituciones del derecho"],
@@ -153,64 +159,54 @@
       "Comunicación política": ["Análisis político y opinión pública"]
     };
 
-    const approved = JSON.parse(localStorage.getItem("materias_aprobadas") || "[]");
+    const aprobadas = JSON.parse(localStorage.getItem("materiasAprobadas") || "[]");
 
-    const malla = document.getElementById("malla");
+    const contenedor = document.getElementById("contenedor");
 
-    function crearMalla() {
-      Object.entries(subjects).forEach(([año, materias]) => {
-        const cont = document.createElement("div");
-        cont.className = "year";
-        cont.innerHTML = `<h2>${año}</h2>`;
+    for (const [ciclo, materias] of Object.entries(estructura)) {
+      const div = document.createElement("div");
+      div.className = "ciclo";
+      div.innerHTML = `<h2>${ciclo}</h2>`;
 
-        const grid = document.createElement("div");
-        grid.className = "grid";
+      const contMaterias = document.createElement("div");
+      contMaterias.className = "materias";
 
-        materias.forEach((materia) => {
-          const div = document.createElement("div");
-          div.className = "subject";
-          div.textContent = materia;
-          const tooltip = document.createElement("div");
-          tooltip.className = "tooltip";
-          div.appendChild(tooltip);
+      materias.forEach(nombre => {
+        const m = document.createElement("div");
+        m.className = "materia";
+        m.textContent = nombre;
 
-          div.updateState = () => {
-            const reqs = correlatividades[materia] || [];
-            const ready = reqs.every((r) => approved.includes(r));
-            const isAprob = approved.includes(materia);
+        if (aprobadas.includes(nombre)) {
+          m.classList.add("aprobada");
+        } else if (correlatividades[nombre]) {
+          const faltantes = correlatividades[nombre].filter(req => !aprobadas.includes(req));
+          if (faltantes.length > 0) {
+            m.classList.add("bloqueada");
+            m.setAttribute("data-tooltip", "Faltan: " + faltantes.join(", "));
+          }
+        }
 
-            div.classList.remove("locked", "approved");
-            if (isAprob) {
-              div.classList.add("approved");
-            } else if (!ready) {
-              div.classList.add("locked");
-              tooltip.textContent = "Falta: " + reqs.filter((r) => !approved.includes(r)).join(", ");
-            }
-
-            div.onclick = () => {
-              if (!ready && !isAprob) return;
-              if (isAprob) approved.splice(approved.indexOf(materia), 1);
-              else approved.push(materia);
-              localStorage.setItem("materias_aprobadas", JSON.stringify(approved));
-              actualizarMalla();
-            };
-          };
-
-          div.updateState();
-          grid.appendChild(div);
+        m.addEventListener("click", () => {
+          if (m.classList.contains("bloqueada")) return;
+          m.classList.toggle("aprobada");
+          const index = aprobadas.indexOf(nombre);
+          if (index > -1) {
+            aprobadas.splice(index, 1);
+          } else {
+            aprobadas.push(nombre);
+          }
+          localStorage.setItem("materiasAprobadas", JSON.stringify(aprobadas));
+          location.reload();
         });
 
-        cont.appendChild(grid);
-        malla.appendChild(cont);
+        contMaterias.appendChild(m);
       });
-    }
 
-    function actualizarMalla() {
-      document.querySelectorAll(".subject").forEach((div) => div.updateState?.());
+      div.appendChild(contMaterias);
+      contenedor.appendChild(div);
     }
-
-    crearMalla();
   </script>
 </body>
 </html>
 
+ 
